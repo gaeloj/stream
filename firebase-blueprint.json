@@ -1,0 +1,905 @@
+{
+  "entities": {
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Autorização explícita de administrador da plataforma.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "grantedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "displayName", "grantedBy", "createdAt"]
+    },
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "Perfil de usuário (assinante ou administrador) com estado de assinatura e saldo de teste gratuito.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "role": {
+          "type": "string",
+          "enum": ["subscriber", "admin"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["trial", "active", "expired", "frozen", "blocked"]
+        },
+        "authProvider": {
+          "type": "string",
+          "enum": ["google", "password", "admin_provisioned"]
+        },
+        "planId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "planName": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "trialSecondsRemaining": {
+          "type": "integer"
+        },
+        "trialSecondsUsed": {
+          "type": "integer"
+        },
+        "subscriptionStartedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "subscriptionExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "email",
+        "role",
+        "status",
+        "authProvider",
+        "trialSecondsRemaining",
+        "trialSecondsUsed",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PlatformSettings": {
+      "title": "PlatformSettings",
+      "description": "Configurações globais da plataforma, incluindo duração padrão do teste gratuito e estado da configuração inicial.",
+      "type": "object",
+      "properties": {
+        "platformName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "defaultTrialMinutes": {
+          "type": "integer"
+        },
+        "allowSelfRegistration": {
+          "type": "boolean"
+        },
+        "initializedByUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "initializedByEmail": {
+          "type": "string",
+          "maxLength": 254
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "platformName",
+        "defaultTrialMinutes",
+        "allowSelfRegistration",
+        "initializedByUid",
+        "initializedByEmail",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SubscriptionPlan": {
+      "title": "SubscriptionPlan",
+      "description": "Plano de assinatura configurável pelo administrador.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "description": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 300
+        },
+        "priceCents": {
+          "type": "integer"
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["BRL", "USD"]
+        },
+        "durationDays": {
+          "type": "integer"
+        },
+        "benefits": {
+          "type": "array"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "sortOrder": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "priceCents",
+        "currency",
+        "durationDays",
+        "benefits",
+        "isActive",
+        "sortOrder",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Categoria ou gênero do catálogo de filmes e séries.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60,
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "sortOrder": {
+          "type": "integer"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name", "slug", "sortOrder", "isActive", "createdAt", "updatedAt"]
+    },
+    "Movie": {
+      "title": "Movie",
+      "description": "Metadados públicos de filme no catálogo sem exposição direta de link privado do Drive.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "synopsis": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 1500
+        },
+        "posterUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "bannerUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "categoryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "genre": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "releaseYear": {
+          "type": "integer"
+        },
+        "durationMinutes": {
+          "type": "integer"
+        },
+        "ageRating": {
+          "type": "string",
+          "enum": ["L", "10", "12", "14", "16", "18"]
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "subtitlesLabel": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "hasVideoSource": {
+          "type": "boolean"
+        },
+        "hasTrailer": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["published", "draft"]
+        },
+        "featured": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "synopsis",
+        "posterUrl",
+        "bannerUrl",
+        "categoryId",
+        "genre",
+        "releaseYear",
+        "durationMinutes",
+        "ageRating",
+        "language",
+        "subtitlesLabel",
+        "hasVideoSource",
+        "status",
+        "featured",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Series": {
+      "title": "Series",
+      "description": "Metadados públicos de série no catálogo.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "synopsis": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 1500
+        },
+        "posterUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "bannerUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "categoryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "genre": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "releaseYear": {
+          "type": "integer"
+        },
+        "ageRating": {
+          "type": "string",
+          "enum": ["L", "10", "12", "14", "16", "18"]
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "hasTrailer": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["published", "draft"]
+        },
+        "featured": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "title",
+        "synopsis",
+        "posterUrl",
+        "bannerUrl",
+        "categoryId",
+        "genre",
+        "releaseYear",
+        "ageRating",
+        "language",
+        "status",
+        "featured",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Season": {
+      "title": "Season",
+      "description": "Temporada pertencente a uma série.",
+      "type": "object",
+      "properties": {
+        "seriesId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "seasonNumber": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "synopsis": {
+          "type": "string",
+          "maxLength": 800
+        },
+        "status": {
+          "type": "string",
+          "enum": ["published", "draft"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "seriesId",
+        "seasonNumber",
+        "title",
+        "synopsis",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Episode": {
+      "title": "Episode",
+      "description": "Episódio pertencente a uma temporada de série sem exposição de link privado de mídia.",
+      "type": "object",
+      "properties": {
+        "seriesId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "seasonId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "seasonNumber": {
+          "type": "integer"
+        },
+        "episodeNumber": {
+          "type": "integer"
+        },
+        "sortOrder": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 1200
+        },
+        "durationMinutes": {
+          "type": "integer"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "subtitlesLabel": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "hasVideoSource": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["published", "draft"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "seriesId",
+        "seasonId",
+        "seasonNumber",
+        "episodeNumber",
+        "sortOrder",
+        "title",
+        "description",
+        "durationMinutes",
+        "thumbnailUrl",
+        "subtitlesLabel",
+        "hasVideoSource",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "MediaSource": {
+      "title": "MediaSource",
+      "description": "Cofre administrativo com os IDs/links privados do Google Drive ou CDN para entrega segura via backend.",
+      "type": "object",
+      "properties": {
+        "mediaType": {
+          "type": "string",
+          "enum": ["movie", "episode", "trailer"]
+        },
+        "mediaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["google_drive", "gcs_hls", "youtube"]
+        },
+        "driveFileId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "sourceUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "subtitleUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "qualityLabel": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "updatedByUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "mediaType",
+        "mediaId",
+        "provider",
+        "driveFileId",
+        "sourceUrl",
+        "subtitleUrl",
+        "qualityLabel",
+        "updatedByUid",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "WatchHistory": {
+      "title": "WatchHistory",
+      "description": "Progresso de reprodução por usuário para retomar de onde parou e histórico.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": ["movie", "episode"]
+        },
+        "mediaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "seriesId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "seasonNumber": {
+          "type": "integer"
+        },
+        "episodeNumber": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "posterUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "progressSeconds": {
+          "type": "integer"
+        },
+        "durationSeconds": {
+          "type": "integer"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "mediaType",
+        "mediaId",
+        "title",
+        "posterUrl",
+        "progressSeconds",
+        "durationSeconds",
+        "completed",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "FavoriteItem": {
+      "title": "FavoriteItem",
+      "description": "Conteúdo adicionado à Minha Lista pelo assinante.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": ["movie", "series"]
+        },
+        "mediaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "posterUrl": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "genre": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "releaseYear": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "mediaType", "mediaId", "title", "posterUrl", "genre", "releaseYear", "createdAt"]
+    },
+    "PlaybackSession": {
+      "title": "PlaybackSession",
+      "description": "Registro de sessão de reprodução para auditoria e controle de tempo.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "mediaType": {
+          "type": "string",
+          "enum": ["movie", "episode"]
+        },
+        "mediaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "paused", "ended", "revoked"]
+        },
+        "consumedSeconds": {
+          "type": "integer"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "mediaType", "mediaId", "status", "consumedSeconds", "startedAt", "updatedAt"]
+    },
+    "AdminAuditLog": {
+      "title": "AdminAuditLog",
+      "description": "Registro imutável de auditoria das operações administrativas.",
+      "type": "object",
+      "properties": {
+        "actorUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorEmail": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "action": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "targetType": {
+          "type": "string",
+          "enum": ["user", "plan", "settings", "admin", "category", "movie", "series", "season", "episode", "media"]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 400
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "actorUid",
+        "actorEmail",
+        "action",
+        "targetType",
+        "targetId",
+        "summary",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/AdminRecord"
+      },
+      "description": "Registros de privilégio administrativo verificados no servidor."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserAccount"
+      },
+      "description": "Contas de assinantes e administradores com isolamento estrito de PII."
+    },
+    "/settings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/PlatformSettings"
+      },
+      "description": "Configurações globais da plataforma (documento 'platform')."
+    },
+    "/plans/{planId}": {
+      "schema": {
+        "$ref": "#/entities/SubscriptionPlan"
+      },
+      "description": "Planos de assinatura disponíveis e configurações de cobrança."
+    },
+    "/categories/{categoryId}": {
+      "schema": {
+        "$ref": "#/entities/Category"
+      },
+      "description": "Categorias do catálogo."
+    },
+    "/movies/{movieId}": {
+      "schema": {
+        "$ref": "#/entities/Movie"
+      },
+      "description": "Catálogo de filmes."
+    },
+    "/series/{seriesId}": {
+      "schema": {
+        "$ref": "#/entities/Series"
+      },
+      "description": "Catálogo de séries."
+    },
+    "/seasons/{seasonId}": {
+      "schema": {
+        "$ref": "#/entities/Season"
+      },
+      "description": "Temporadas das séries."
+    },
+    "/episodes/{episodeId}": {
+      "schema": {
+        "$ref": "#/entities/Episode"
+      },
+      "description": "Episódios das temporadas."
+    },
+    "/mediaSources/{sourceId}": {
+      "schema": {
+        "$ref": "#/entities/MediaSource"
+      },
+      "description": "Cofre restrito a administradores com links e IDs privados do Google Drive/CDN."
+    },
+    "/watchHistory/{historyId}": {
+      "schema": {
+        "$ref": "#/entities/WatchHistory"
+      },
+      "description": "Histórico e posição de reprodução do usuário."
+    },
+    "/favorites/{favId}": {
+      "schema": {
+        "$ref": "#/entities/FavoriteItem"
+      },
+      "description": "Favoritos (Minha Lista) do assinante."
+    },
+    "/playbackSessions/{sessionId}": {
+      "schema": {
+        "$ref": "#/entities/PlaybackSession"
+      },
+      "description": "Sessões de reprodução rastreadas para controle de acesso."
+    },
+    "/adminLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/AdminAuditLog"
+      },
+      "description": "Trilha de auditoria imutável das ações administrativas."
+    }
+  }
+}
